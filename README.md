@@ -46,4 +46,4 @@ View predicted crop and class confidence
 ----------------------------------------------------------------------------
 Anant Sharma:
 For demo/test purposes, this project uses simulated input. You can extend this to integrate with real sensors like DHT22, pH probe, and NPK sensor for real-time farming solutions. 
-Dataset used in mixed datset from kaggle,ICAR-indian agricultural research institute, and Rajasthan Agricultural Research Institute (RARI).
+The dataset used is mixed datset from kaggle,ICAR-indian agricultural research institute, and Rajasthan Agricultural Research Institute (RARI).
