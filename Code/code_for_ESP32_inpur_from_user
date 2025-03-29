@@ -1,0 +1,136 @@
+#include "crop_model_ESP.h"
+#include <tflm_esp32.h>
+#include <eloquent_tinyml.h>
+
+#define TF_NUM_OPS 2
+#define ARENA_SIZE 16000
+
+#define N_INPUTS 7
+#define N_OUTPUTS 22
+#define LED_PIN 2
+
+Eloquent::TF::Sequential<TF_NUM_OPS, ARENA_SIZE> tf;
+
+float input[N_INPUTS];
+int currentFeature = 0;
+bool readyForPrediction = false;
+
+const char* feature_names[N_INPUTS] = {
+  "Nitrogen", "Phosphorus", "Potassium",
+  "Temperature", "Humidity", "pH", "Rainfall"
+};
+
+const char* crop_names[N_OUTPUTS] = {
+  "apple", "banana", "blackgram", "chickpea", "coconut", "coffee", "cotton",
+  "grapes", "jute", "kidneybeans", "lentil", "maize", "mango", "mothbeans",
+  "mungbean", "muskmelon", "orange", "papaya", "pigeonpeas", "pomegranate",
+  "rice", "watermelon"
+};
+
+void blink(int times, int delayTime = 200) {
+  for (int i = 0; i < times; i++) {
+    digitalWrite(LED_PIN, HIGH);
+    delay(delayTime);
+    digitalWrite(LED_PIN, LOW);
+    delay(delayTime);
+  }
+}
+
+void setup() {
+  Serial.begin(115200);
+  delay(3000);
+  Serial.println("__Crop Recommendation on ESP32__");
+
+  pinMode(LED_PIN, OUTPUT);
+  digitalWrite(LED_PIN, LOW);
+
+  tf.setNumInputs(N_INPUTS);
+  tf.setNumOutputs(N_OUTPUTS);
+  tf.resolver.AddFullyConnected();
+  tf.resolver.AddSoftmax();
+
+  while (!tf.begin(crop_model_ESP_tflite).isOk()) {
+    Serial.println("Model loading failed:");
+    Serial.println(tf.exception.toString());
+    delay(500);
+  }
+
+  Serial.println("Model loaded successfully.");
+  Serial.print("Enter normalized value for ");
+  Serial.print(feature_names[currentFeature]);
+  Serial.println(":");
+}
+
+void loop() {
+  static String inputBuffer = "";
+
+  while (Serial.available()) {
+    char c = Serial.read();
+
+    if (c == '\n' || c == '\r') {
+      if (inputBuffer.length() > 0) {
+        float val = inputBuffer.toFloat();
+        input[currentFeature] = val;
+        inputBuffer = "";
+
+        blink(1);  // 🔦 Blink LED once after input received
+
+        currentFeature++;
+
+        if (currentFeature < N_INPUTS) {
+          Serial.print("Enter normalized value for ");
+          Serial.print(feature_names[currentFeature]);
+          Serial.println(":");
+        } else {
+          readyForPrediction = true;
+          currentFeature = 0;  // reset for next round
+        }
+      }
+    } else {
+      inputBuffer += c;
+    }
+  }
+
+  if (readyForPrediction) {
+    Serial.println("Running prediction...");
+    if (!tf.predict(input).isOk()) {
+      Serial.println("Prediction failed:");
+      Serial.println(tf.exception.toString());
+      readyForPrediction = false;
+      return;
+    }
+
+    int maxIdx = 0;
+    float maxVal = tf.output(0);
+    for (int i = 1; i < N_OUTPUTS; i++) {
+      if (tf.output(i) > maxVal) {
+        maxVal = tf.output(i);
+        maxIdx = i;
+      }
+    }
+
+    // Blink 3 times after prediction
+    blink(3, 150);
+
+    Serial.print("✅ Predicted crop: ");
+    Serial.println(crop_names[maxIdx]);
+
+    Serial.println("Class confidence scores:");
+    for (int i = 0; i < N_OUTPUTS; i++) {
+      Serial.print(crop_names[i]);
+      Serial.print(": ");
+      Serial.println(tf.output(i), 4);
+    }
+
+    Serial.print("Prediction time: ");
+    Serial.print(tf.benchmark.microseconds());
+    Serial.println(" us");
+
+    Serial.println("\nStart next prediction:");
+    Serial.print("Enter normalized value for ");
+    Serial.print(feature_names[currentFeature]);
+    Serial.println(":");
+
+    readyForPrediction = false;
+  }
+}
