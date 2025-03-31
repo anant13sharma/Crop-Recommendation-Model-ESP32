@@ -5,7 +5,7 @@
 ----------------------------------------------------------------------------
 🔧 How It Works
 ----------------------------------------------------------------------------
--Trained a lightweight neural network using features:
+- Trained a lightweight neural network using features:
 - Nitrogen (N), Phosphorus (P), Potassium (K)
 - Temperature, Humidity, pH, Rainfall
 - Normalized data and trained in Python using TensorFlow
