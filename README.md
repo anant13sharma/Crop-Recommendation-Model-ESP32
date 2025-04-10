@@ -1,49 +1,36 @@
-----------------------------------------------------------------------------
-# 🌱 Crop-Recommendation-Model-On-ESP32
-----------------------------------------------------------------------------
-- This is a fully embedded crop recommendation system that runs on an ESP32 board using a trained machine learning model. The model is deployed in TensorFlow Lite format and uses simulated environmental input to predict the most suitable crop for cultivation.
-----------------------------------------------------------------------------
-# 🔧 How It Works
-----------------------------------------------------------------------------
-- Trained a lightweight neural network using features:
-- Nitrogen (N), Phosphorus (P), Potassium (K)
-- Temperature, Humidity, pH, Rainfall
-- Normalized data and trained in Python using TensorFlow
-- Exported model to .tflite, converted to .h file using xxd
--  Model runs on ESP32 with EloquentTinyML and tflm_esp32
-- Input is simulated via script (no sensors)
-- Output shows predicted crop and confidence scores in Serial Monitor
-----------------------------------------------------------------------------
-# 📁 Folder Structure
-----------------------------------------------------------------------------
-crop_model_ESP/
-├── crop_model_ESP.ino       # Arduino sketch
-├── crop_model_ESP.h         # TFLite model as C array
+# 🌾 Crop Recommendation System on ESP32
 
----------------------------------------------------------------------------
-# 📊 Example Output
----------------------------------------------------------------------------
-- __Crop Recommendation on ESP32__
-- Model loaded successfully. Running prediction...
-- Predicted crop: papaya
-- Class scores:
-- apple: 0.0000
-- ...
-- papaya: 0.9797
-- Prediction time: 309 us
---------------------------------------------------------------------------
-# 🚀 Getting Started
-----------------------------------------------------------------------------
-- Train model in Python using crop dataset
-- Export .tflite, convert to .h using:
--   xxd -i crop_model_ESP.tflite > crop_model_ESP.h
-- Place .h in Arduino project folder
-- Upload crop_model_ESP.ino to FireBeetle ESP32
-- Open Serial Monitor at 115200 baud
-- View predicted crop and class confidence
-----------------------------------------------------------------------------
-# 🙌 Author
-----------------------------------------------------------------------------
-Anant Sharma:
-- For demo/test purposes, this project uses simulated input. You can extend this to integrate with real sensors like DHT22, pH probe, and NPK sensor for real-time farming solutions. 
-- The dataset used is mixed datset from kaggle,ICAR-indian agricultural research institute, and Rajasthan Agricultural Research Institute (RARI).
+A lightweight machine learning project that runs a TensorFlow Lite model on an ESP32 FireBeetle V2.0 to recommend suitable crops based on environmental inputs.
+
+---
+
+## 🔧 Features
+- Accepts **raw user input** via Serial Monitor:
+  - Nitrogen, Phosphorus, Potassium (kg/ha)
+  - Temperature (°C), Humidity (%), pH, Rainfall (mm)
+- Internally **normalizes inputs**
+- Runs `.tflite` model converted to C array (`crop_model_ESP.h`)
+- **LED blinks** after each input and prediction
+- Outputs **predicted crop** and **confidence scores**
+
+---
+
+## 📦 Dependencies
+- [EloquentTinyML](https://github.com/eloquentarduino/EloquentTinyML)
+- [tflm_esp32](https://github.com/tensorflow/tflite-micro-arduino-examples)
+
+Board: `FireBeetle-ESP32`  
+Baud Rate: `115200`
+
+---
+
+## 🧪 Sample Input (via Serial Monitor)
+
+
+- Enter Nitrogen (kg/ha): 80 Enter Phosphorus (kg/ha): 40 Enter Potassium (kg/ha): 90 Enter Temperature (°C): 26 Enter Humidity (%): 70 Enter pH: 6.2 Enter Rainfall (mm): 120
+
+- 
+---
+
+## 📜 License
+MIT License © Anant Sharma
