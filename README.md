@@ -2,6 +2,12 @@
 
 A lightweight machine learning project that runs a TensorFlow Lite model on an ESP32 FireBeetle V2.0 to recommend suitable crops based on environmental inputs.
 
+
+---
+## Output Example
+
+![Demo Output](Output%20Example/demo_output.gif)
+
 ---
 
 ##  Features
