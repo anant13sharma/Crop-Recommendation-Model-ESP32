@@ -9,6 +9,14 @@ A lightweight machine learning project that runs a TensorFlow Lite model on an E
 ![Demo Output](Output%20Example/demo_output.gif)
 
 ---
+## Dataset
+
+The dataset used in this project was compiled by the **Indian Council of Agricultural Research (ICAR)** and made publicly available by the **Indian Chamber of Food and Agriculture (ICFA)**. It includes soil nutrient ratios (N, P, K, C, S, Mg, Fe, Mn), pH levels, temperature, humidity, and rainfall data.
+
+- **Source:** Indian Chamber of Food and Agriculture (ICFA)  
+- **Accessed from:** [Figshare - Crop Recommendation Dataset](https://figshare.com/articles/dataset/Crop_Recommendation_dataset/26308696)
+
+---
 
 ##  Features
 - Accepts **raw user input** via Serial Monitor:
